@@ -1,111 +1,61 @@
-# Project #2. Private Blockchain
+# Blockchain Data
 
-This is Project 2, Private Blockchain, in this project I created the classes to manage my private blockchain, to be able to persist my blochchain I used LevelDB.
+Blockchain has the potential to change the way that the world approaches data. Develop Blockchain skills by understanding the data model behind Blockchain by developing your own simplified private blockchain.
 
-## Setup project for Review.
+## Getting Started
 
-To setup the project for review do the following:
-1. Download the project.
-2. Run command __npm install__ to install the project dependencies.
-3. Run command __node simpleChain.js__ in the root directory.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## Testing the project
+### Prerequisites
 
-The file __simpleChain.js__ in the root directory has all the code to be able to test the project, please review the comments in the file and uncomment the code to be able to test each feature implemented:
+Installing Node and NPM is pretty straightforward using the installer package available from the [Node.js® web site](https://nodejs.org/en/).
 
-* Uncomment the function:
-```
-(function theLoop (i) {
-	setTimeout(function () {
-		let blockTest = new Block.Block("Test Block - " + (i + 1));
-		myBlockChain.addNewBlock(blockTest).then((result) => {
-			console.log(result);
-			i++;
-			if (i < 10) theLoop(i);
-		});
-	}, 10000);
-  })(0);
-```
-This function will create 10 test blocks in the chain.
-* Uncomment the function
-```
-myBlockChain.getBlockChain().then((data) => {
-	console.log( data );
-})
-.catch((error) => {
-	console.log(error);
-})
-```
-This function print in the console the list of blocks in the blockchain
-* Uncomment the function
-```
-myBlockChain.getBlock(0).then((block) => {
-	console.log(JSON.stringify(block));
-}).catch((err) => { console.log(err);});
+### Configuring your project
 
+- Use NPM to initialize your project and create package.json to store project dependencies.
 ```
-This function get from the Blockchain the block requested.
-* Uncomment the function
+npm init
 ```
-myBlockChain.validateBlock(0).then((valid) => {
-	console.log(valid);
-})
-.catch((error) => {
-	console.log(error);
-})
+- Install crypto-js with --save flag to save dependency to our package.json file
 ```
-This function validate and show in the console if the block is valid or not, if you want to modify a block to test this function uncomment this code:
+npm install crypto-js --save
 ```
-myBlockChain.getBlock(5).then((block) => {
-	let blockAux = block;
-	blockAux.body = "Tampered Block";
-	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
-			myBlockChain.validateBlock(blockAux.height).then((valid) => {
-				console.log(`Block #${blockAux.height}, is valid? = ${valid}`);
-			})
-			.catch((error) => {
-				console.log(error);
-			})
-		} else {
-			console.log("The Block wasn't modified");
-		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
-
-myBlockChain.getBlock(6).then((block) => {
-	let blockAux = block;
-	blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
-	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
-			console.log("The Block was modified");
-		} else {
-			console.log("The Block wasn't modified");
-		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
+- Install level with --save flag
 ```
-* Uncomment this function:
-```
-myBlockChain.validateChain().then((errorLog) => {
-	if(errorLog.length > 0){
-		console.log("The chain is not valid:");
-		errorLog.forEach(error => {
-			console.log(error);
-		});
-	} else {
-		console.log("No errors found, The chain is Valid!");
-	}
-})
-.catch((error) => {
-	console.log(error);
-})
+npm install level --save
 ```
 
-This function validates the whole chain and return a list of errors found during the validation.
+## Testing
 
-## What do I learned with this Project
-
-* I was able to identify the basic data model for a Blockchain application.
-* I was able to use LevelDB to persist the Blockchain data.
-* I was able to write algorithms for basic operations in the Blockchain.
+To test code:
+1: Open a command prompt or shell terminal after install node.js.
+2: Enter a node session, also known as REPL (Read-Evaluate-Print-Loop).
+```
+node
+```
+3: Copy and paste your code into your node session
+4: Instantiate blockchain with blockchain variable
+```
+let blockchain = new Blockchain();
+```
+5: Generate 10 blocks using a for loop
+```
+for (var i = 0; i <= 10; i++) {
+  blockchain.addBlock(new Block("test data "+i));
+}
+```
+6: Validate blockchain
+```
+blockchain.validateChain();
+```
+7: Induce errors by changing block data
+```
+let inducedErrorBlocks = [2,4,7];
+for (var i = 0; i < inducedErrorBlocks.length; i++) {
+  blockchain.chain[inducedErrorBlocks[i]].data='induced chain error';
+}
+```
+8: Validate blockchain. The chain should now fail with blocks 2,4, and 7.
+```
+blockchain.validateChain();
+```
