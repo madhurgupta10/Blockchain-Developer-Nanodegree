@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Star Notary</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Star Notary</h1>
+
+            <b>Star Name:</b><br><input type="text" id="name"><br>
+            <hr>
+            <b>Star Story:</b><br><textarea type="text" id="story"></textarea><br>
+            <hr>
+            <b>Ra:</b><br><input type="text" id="ra"><br>
+            <hr>
+            <b>Dec:</b><br><input type="text" id="dec"><br>
+            <hr>
+            <b>Mag:</b><br><input type="text" id="mag"><br>
+            <hr>
+            <b>Id:</b><br><input type="text" id="starId"><br>
+            <hr>
+
+            <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
+
+            <b>Query By Id:</b><br><input type="text" id="queryById"><br>
+            <button id="claim-button" onclick="queryButtonClicked()">Get Star Info</button>
+            <hr>
+        </div>
+
+        <script>    
+         
+            if(typeof web3 != 'undefined') { 
+                web3 = new Web3(web3.currentProvider) // what Metamask injected 
+            } else {
+                // Instantiate and set Ganache as your provider
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            }
+
+            // The default (top) wallet account from a list of test accounts 
+            web3.eth.defaultAccount = web3.eth.accounts[0];
+
+            // The interface definition for your smart contract (the ABI) 
+            var StarNotary = web3.eth.contract(
+                [
+                    {
+                        "constant": false,
+                        "inputs": [],
+                        "name": "claimStar",
+                        "outputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    },
+                    {
+                        "anonymous": false,
+                        "inputs": [
+                            {
+                                "indexed": false,
+                                "name": "owner",
+                                "type": "address"
+                            }
+                        ],
+                        "name": "starClaimed",
+                        "type": "event"
+                    },
+                    {
+                        "inputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "constructor"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "starName",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "string"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "starOwner",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "address"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    }
+                ]
+            );
+            // Grab the contract at specified deployed address with the interface defined by the ABI
+            var starNotary = StarNotary.at('0x6575ef18e0cd0792f0BEd22158BC6848870f70fE');
+            
+            // Clicked to get a Star
+            function claimButtonClicked() {
+                    web3.eth.getAccounts(function (error, accounts) {
+                        if (error) {
+                            alert(error)
+                            return
+                        }
+
+                    const account = accounts[0]
+                    const name = document.getElementById("name").value
+                    const story = document.getElementById("story").value
+                    const ra = document.getElementById("ra").value
+                    const dec = document.getElementById("dec").value
+                    const mag = document.getElementById("mag").value
+                    const id = document.getElementById("starId").value
+                    
+                    starNotary.createStar.sendTransaction(name, story, ra, dec, mag, id, { from: account },
+                            function (error, result) {
+                                if (!error) {
+                                    alert(result)
+
+                                    let starClaimedEvent = starNotary.Transfer()
+                                    starClaimedEvent.watch(function (error, result) {
+                                        if (!error) {
+                                            alert("transaction complete!")
+                                        } else {
+                                            alert('watching for star claimed event is failing')
+                                        }
+                                    })
+                                } else {
+                                    alert(error)
+                                }
+                            })
+                })
+            }
+
+            // clicked to query star
+            function queryButtonClicked() {
+                    web3.eth.getAccounts(function (error, accounts) {
+                        if (error) {
+                            alert(error)
+                            return
+                        }
+
+                        const account = accounts[0]
+                        const tokenId = document.getElementById("queryById").value
+
+                        starNotary.tokenIdToStarInfo.call(tokenId, function (error, result) {
+                            if (!error) {
+                                alert(result)
+                            } else {
+                                alert(error)
+                            }
+                        })
+                    })
+                }
+
+        </script>
+    </body>
+</html>
