@@ -1,0 +1,15 @@
+{
+  "name": "Pj5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "truffle": "^5.0.0",
+    "truffle-hdwallet-provider": "0.0.6"
+  }
+}

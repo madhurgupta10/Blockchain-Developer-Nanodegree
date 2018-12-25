@@ -6,7 +6,7 @@ contract('StarNotary', accounts => {
     let user2 = accounts[2]
     let randomMaliciousUser = accounts[3]
 
-    let starPrice = web3.utils.toWei(.01.toString(), "ether")
+    let starPrice = web3.toWei(.01.toString(), "ether")
 
     let name = "Awesome Star"
     let starStory = "this star was bought for birthday"
@@ -121,7 +121,7 @@ contract('StarNotary', accounts => {
             })
 
             it('user2 correctly has their balance changed', async function () { 
-                let overpaidAmount = web3.utils.toWei(.05.toString(), 'ether')
+                let overpaidAmount = web3.toWei(.05.toString(), 'ether')
 
                 const balanceOfUser2BeforeTransaction = await web3.eth.getBalance(user2)
                 await this.contract.buyStar(tokenId, {from: user2, value: overpaidAmount, gasPrice:0})
