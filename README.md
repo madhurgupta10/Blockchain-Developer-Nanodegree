@@ -1,5 +1,5 @@
 # Blockchain Developer Nanodegree
-This repository contains the projects from Udacity's Blockchain Developer Nanodegree
+This repository contains my projects from Udacity's Blockchain Developer Nanodegree
 
 ## Projects - Term 1
 ### ✅ 1. Manage Your Blockchain Identity
