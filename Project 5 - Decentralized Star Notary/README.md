@@ -1,4 +1,4 @@
-**Run `index.js` File to Interact**
+**Run `index.html` File to Interact**
 
 ![Demo](https://i.imgur.com/LyPd53n.png)
 
